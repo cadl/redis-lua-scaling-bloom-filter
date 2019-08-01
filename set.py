@@ -43,7 +43,7 @@ def tonumber(s: str, base: int) -> int:
     return int(s, base)
 
 
-def set_bloom_filter(redis_conn: redis.Redis, key: str, false_positives: float, entries: List[str]):
+def set_bloom_filter(redis_conn: redis.Redis, key: str, false_positives: float, entries: List[bytes]):
     count_key: str = f"{key}:count"
     entries_count: int = len(entries)
     factor: int = math.ceil((entries_count + entries_count) / entries_count)
@@ -58,7 +58,7 @@ def set_bloom_filter(redis_conn: redis.Redis, key: str, false_positives: float, 
     bit_array = BitArray(0)
 
     for entry in entries:
-        _hash: str = hashlib.sha1(entry.encode("utf8")).hexdigest()
+        _hash: str = hashlib.sha1(entry).hexdigest()
         h[0] = tonumber(string_sub(_hash, 0, 8), 16)
         h[1] = tonumber(string_sub(_hash, 8, 16), 16)
         h[2] = tonumber(string_sub(_hash, 16, 24), 16)
